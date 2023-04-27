@@ -1,10 +1,10 @@
 # Импортируем необходимые классы.
 import logging
 import json
+import requests
 import aiohttp
 from telegram.ext import Application, MessageHandler, filters, CommandHandler, ConversationHandler
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-
 
 # Запускаем логгирование
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
@@ -15,6 +15,26 @@ apikey = "24c8b16e-642c-44d0-a9fa-a895d26316cf"
 right_answers = ['9,58 секунд', 'углерод', 'Стэнли Кубрик', 'водород', 'Япония',
                  'Осло', 'Юрий Гагарин', 'Азия', 'хамелеон', 'Испания']
 all_answers = []
+
+
+def toponym(text):
+    geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={text}&format=json"
+
+    # Выполняем запрос.
+    response = requests.get(geocoder_request)
+    if response:
+        # Преобразуем ответ в json-объект
+        json_response = response.json()
+
+        # Получаем первый топоним из ответа геокодера.
+        # Согласно описанию ответа, он находится по следующему пути:
+        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+        # Полный адрес топонима:
+        toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"]
+        # Координаты центра топонима:
+        toponym_coodrinates = toponym["Point"]["pos"]
+        # Печатаем извлечённые из ответа поля:
+        return toponym_coodrinates
 
 
 async def questions(update, context):
@@ -160,35 +180,35 @@ async def stop(update, context):
     return ConversationHandler.END
 
 
-async def geocoder(update, context):
-    geocoder_uri = "http://geocode-maps.yandex.ru/1.x/"
-    response = await get_response(geocoder_uri, params={
-        "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
-        "format": "json",
-        "geocode": update.message.text
-    })
-
-    toponym = response["response"]["GeoObjectCollection"][
-        "featureMember"][0]["GeoObject"]
-    ll, spn = get_ll_spn(toponym)
-    # Можно воспользоваться готовой функцией,
-    # которую предлагалось сделать на уроках, посвящённых HTTP-геокодеру.
-
-    static_api_request = f"http://static-maps.yandex.ru/1.x/?ll={ll}&spn={spn}&l=map"
-    await context.bot.send_photo(
-        update.message.chat_id,  # Идентификатор чата. Куда посылать картинку.
-        # Ссылка на static API, по сути, ссылка на картинку.
-        # Телеграму можно передать прямо её, не скачивая предварительно карту.
-        static_api_request,
-        caption="Нашёл:"
-    )
-
-
 async def get_response(url, params):
     logger.info(f"getting {url}")
     async with aiohttp.ClientSession() as session:
         async with session.get(url, params=params) as resp:
             return await resp.json()
+
+
+async def yandex_weather(update, context):
+    location = ' '.join(context.args)
+    coords = toponym(location).split()
+    conditions = {'clear': 'ясно', 'partly-cloudy': 'малооблачно', 'cloudy': 'облачно с прояснениями',
+                  'overcast': 'пасмурно', 'drizzle': 'морось', 'light-rain': 'небольшой дождь',
+                  'rain': 'дождь', 'moderate-rain': 'умеренно сильный', 'heavy-rain': 'сильный дождь',
+                  'continuous-heavy-rain': 'длительный сильный дождь', 'showers': 'ливень',
+                  'wet-snow': 'дождь со снегом', 'light-snow': 'небольшой снег', 'snow': 'снег',
+                  'snow-showers': 'снегопад', 'hail': 'град', 'thunderstorm': 'гроза',
+                  'thunderstorm-with-rain': 'дождь с грозой', 'thunderstorm-with-hail': 'гроза с градом'
+                  }
+    wind_dir = {'nw': 'северо-западное', 'n': 'северное', 'ne': 'северо-восточное', 'e': 'восточное',
+                'se': 'юго-восточное', 's': 'южное', 'sw': 'юго-западное', 'w': 'западное', 'с': 'штиль'}
+    params = {"lat": coords[1],
+              "lon": coords[0],
+              "lang": "ru_RU",
+              "hours": "false",
+              "extra": "true"}
+    headers = {"X-Yandex-API-Key": "00e5b9a8-2f6b-4583-9953-3e5c2ff2d16c"}
+    res = requests.get('https://api.weather.yandex.ru/v2/forecast', params=params, headers=headers).json()
+
+    await update.message.reply_text(f"Вы выполнили запрос погоды по адресу: {location} \nТемпература: {res['fact']['temp']}°C \nОщущается, как: {res['fact']['feels_like']}°C\nОсадки: {conditions[res['fact']['condition']]}")
 
 
 def main():
@@ -214,6 +234,7 @@ def main():
 
     application.add_handler(conv_handler)
     application.add_handler(CommandHandler('questions', questions))
+    application.add_handler(CommandHandler('weather', yandex_weather))
 
     application.run_polling()
 
