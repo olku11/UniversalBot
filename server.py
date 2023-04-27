@@ -231,8 +231,29 @@ def main():
 
         fallbacks=[CommandHandler('stop', stop)]
     )
+    conv_handler1 = ConversationHandler(
+        # Точка входа в диалог.
+        # В данном случае — команда /start. Она задаёт первый вопрос.
+        entry_points=[CommandHandler('challenge', challenge)],
+
+        # Состояние внутри диалога.
+        # Вариант с двумя обработчиками, фильтрующими текстовые сообщения.
+        states={
+            # Функция читает ответ на первый вопрос и задаёт второй.
+            1: [MessageHandler(filters.TEXT & ~filters.COMMAND, chal_1)],
+            # Функция читает ответ на второй вопрос и завершает диалог.
+            2: [MessageHandler(filters.TEXT & ~filters.COMMAND, chal_2)],
+            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, chal_3)]
+
+        },
+
+        # Точка прерывания диалога. В данном случае — команда /stop.
+        fallbacks=[CommandHandler('stop', stop1)]
+    )
 
     application.add_handler(conv_handler)
+
+    application.add_handler(conv_handler1)
     application.add_handler(CommandHandler('questions', questions))
     application.add_handler(CommandHandler('weather', yandex_weather))
 
