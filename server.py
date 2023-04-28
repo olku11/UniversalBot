@@ -12,8 +12,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 apikey = "24c8b16e-642c-44d0-a9fa-a895d26316cf"
-right_answers = ['9,58 секунд', 'углерод', 'Стэнли Кубрик', 'водород', 'Япония',
-                 'Осло', 'Юрий Гагарин', 'Азия', 'хамелеон', 'Испания']
+right_answers = ['9,58 секунд', 'углерод', 'Стэнли Кубрик', 'хлор', 'Кола-кола',
+                 'Цюрих', 'Юрий Гагарин', 'Азия', 'хамелеон', 'Испания']
 all_answers = []
 
 
@@ -59,7 +59,7 @@ async def second_response(update, context):
 async def third_response(update, context):
     global all_answers, right_answers
     reply_keyboard = [['кислород', 'азот'],
-                      ['углекислый газ', 'водород']]
+                      ['хлор', 'водород']]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     all_answers.append(update.message.text)
     await update.message.reply_text(
@@ -70,19 +70,19 @@ async def third_response(update, context):
 # 4
 async def fourth_response(update, context):
     global all_answers, right_answers
-    reply_keyboard = [['Россия', 'Япония'],
-                      ['Австралия', 'Швеция']]
+    reply_keyboard = [['Пепси', 'Фанта'],
+                      ['Кока-Кола', 'Снапл']]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     all_answers.append(update.message.text)
     await update.message.reply_text(
-        f"В какой из этих стран в году находится меньше дней, чем в остальных?", reply_markup=markup)
+        f"Какой безалкогольный напиток первым был взят в космос?", reply_markup=markup)
     return 5
 
 
 # 5
 async def fifth_response(update, context):
     global all_answers, right_answers
-    reply_keyboard = [['Берлин', 'Вена'],
+    reply_keyboard = [['Цюрих', 'Вена'],
                       ['Копенгаген', 'Осло']]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     all_answers.append(update.message.text)
@@ -305,13 +305,13 @@ async def weather(update, context):
                 return "Введите дату"
         location = ' '.join(location)
         coords = toponym(location).split()
-        conditions = {'clear': 'ясно', 'partly-cloudy': 'малооблачно', 'cloudy': 'облачно с прояснениями',
-                      'overcast': 'пасмурно', 'drizzle': 'морось', 'light-rain': 'небольшой дождь',
-                      'rain': 'дождь', 'moderate-rain': 'умеренно сильный', 'heavy-rain': 'сильный дождь',
-                      'continuous-heavy-rain': 'длительный сильный дождь', 'showers': 'ливень',
-                      'wet-snow': 'дождь со снегом', 'light-snow': 'небольшой снег', 'snow': 'снег',
-                      'snow-showers': 'снегопад', 'hail': 'град', 'thunderstorm': 'гроза',
-                      'thunderstorm-with-rain': 'дождь с грозой', 'thunderstorm-with-hail': 'гроза с градом'
+        conditions = {'clear': 'ясно ☀', 'partly-cloudy': 'малооблачно 🌤', 'cloudy': 'облачно с прояснениями ⛅',
+                      'overcast': 'пасмурно ☁', 'drizzle': 'морось 🌧', 'light-rain': 'небольшой дождь 🌧',
+                      'rain': 'дождь 🌧', 'moderate-rain': 'умеренно сильный 🌧', 'heavy-rain': 'сильный дождь 🌧',
+                      'continuous-heavy-rain': 'длительный сильный дождь 🌧', 'showers': 'ливень 🌧',
+                      'wet-snow': 'дождь со снегом 🌨', 'light-snow': 'небольшой снег 🌨', 'snow': 'снег 🌨',
+                      'snow-showers': 'снегопад 🌨', 'hail': 'град 🌨', 'thunderstorm': 'гроза 🌩',
+                      'thunderstorm-with-rain': 'дождь с грозой ⛈', 'thunderstorm-with-hail': 'гроза с градом ⛈'
                       }
         wind_dir = {'nw': 'северо-западное', 'n': 'северное', 'ne': 'северо-восточное', 'e': 'восточное',
                     'se': 'юго-восточное', 's': 'южное', 'sw': 'юго-западное', 'w': 'западное', 'с': 'штиль'}
@@ -387,7 +387,7 @@ async def weather(update, context):
     if context.args:
         await update.message.reply_text(yandex_weather(context.args))
     else:
-        await update.message.reply_text('Введите геолокацию для вывода погоды')
+        await update.message.reply_text(f'Введите геолокацию для вывода погоды')
 
 
 def main():
