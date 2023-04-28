@@ -21,11 +21,11 @@ count = 0
 
 
 async def start2(update, context):
-    reply_keyboard = [['/menu_random', '/rules', '/top_secret']]
+    reply_keyboard = [['/menu_random', '/rules', '/top_secret', '/economy']]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
     await update.message.reply_text(
         "Привет. Здесь ты можешь неплохо приподнятся!\n"
-        "Вы можете проверить совю дачу, нажав /play.\n"
+        "Вы можете проверить свою дачу, нажав /play.\n"
         "Можно послать команду /rules , если хотите понять правила.\n"
         "Также можно просто закончить диалог с помощью команды /stop\n"
         "Чтобы вернться в меню введите /menu_random\n"
@@ -48,6 +48,12 @@ async def top_secret(update, context):
 async def rules(update, context):
     await update.message.reply_text(
         "Итак, данный раздел нашего бота просто конченный!")
+
+
+async def economy(update, context):
+    global full_count
+    await update.message.reply_text(
+        f"Ваш суммарный счет: {full_count}💸")
 
 
 async def menu_random(update, context):
@@ -73,10 +79,9 @@ async def first_level(update, context):
             elif answer_number < context.user_data['number']:
                 await update.message.reply_text('Ваше число слишком маленькое. Попробуйте еще раз.')
             else:
-                full_count += 6
+                full_count = full_count + 6
                 await update.message.reply_text(
-                    f'Вы угадали число! Поздравляем :) Напишите /play_l2, чтобы сыграть на новом уровне.\n'
-                    f'ваш суммарный счет: {full_count}🧠')
+                    f'Вы угадали число! Поздравляем :) Напишите /play_l2, чтобы сыграть на новом уровне.\n')
                 count = 0
                 return ConversationHandler.END
         else:
@@ -101,10 +106,9 @@ async def second_level(update, context):
             elif answer_number < context.user_data['number']:
                 await update.message.reply_text('Ваше число слишком маленькое. Попробуйте еще раз.')
             else:
-                full_count += 6
+                full_count = full_count + 6
                 await update.message.reply_text(
-                    f'Вы угадали число! Поздравляем :) Напишите /play_l3, чтобы сыграть на новом уровне.\n'
-                    f'ваш суммарный счет: {full_count}')
+                    f'Вы угадали число! Поздравляем :) Напишите /play_l3, чтобы сыграть на новом уровне.\n')
                 count = 0
                 return ConversationHandler.END
         else:
@@ -129,7 +133,7 @@ async def third_level(update, context):
             elif answer_number < context.user_data['number']:
                 await update.message.reply_text('Ваше число слишком маленькое. Попробуйте еще раз.')
             else:
-                full_count += 9
+                full_count = full_count + 9
                 await update.message.reply_text(
                     'Вы угадали число! Поздравляем :) Напишите /play, если хотите сыграть заново)')
                 count = 0
@@ -149,7 +153,6 @@ async def stop(update, context):
 
 async def play(update, context):
     number = random.randint(1, 50)
-    number = 1
     context.user_data['number'] = number
     await update.message.reply_text(
         f"я загадал число от 1 до 50, отгадай")
@@ -159,7 +162,6 @@ async def play(update, context):
 
 async def play_l2(update, context):
     number = random.randint(1, 100)
-    number = 1
     context.user_data['number'] = number
     await update.message.reply_text(
         f"я загадал число от 1 до 100, отгадай")
@@ -168,7 +170,6 @@ async def play_l2(update, context):
 
 async def play_l3(update, context):
     number = random.randint(1, 250)
-    number = 1
     context.user_data['number'] = number
     await update.message.reply_text(
         f"я загадал число от 1 до 250, отгадай")
@@ -569,8 +570,6 @@ async def weather(update, context):
             await update.message.reply_text('Недостаточно средств)')
     else:
         await update.message.reply_text('Введите геолокацию для вывода погоды')
-    await update.message.reply_text(
-        f'ваш суммарный счет: {full_count}')
 
 def main():
     application = Application.builder().token('5999252740:AAENPLeEI4GGgo_0H4QTWZiuCzqn2KWVtQU').build()
@@ -612,7 +611,7 @@ def main():
         fallbacks=[CommandHandler('stop', stop1), CommandHandler('challenge', challenge)]
     )
     conv_handler2 = ConversationHandler(
-        entry_points=[CommandHandler('start', start2), CommandHandler('play', play), CommandHandler('play_l2', play_l2), CommandHandler('play_l3', play_l3)],
+        entry_points=[CommandHandler('start', start2), CommandHandler('play', play), CommandHandler('play_l2', play_l2), CommandHandler('play_l3', play_l3), CommandHandler('economy', economy)],
 
         states={
 
@@ -626,7 +625,7 @@ def main():
         fallbacks=[CommandHandler('stop', stop), CommandHandler('menu_random', menu_random),
                    CommandHandler('play', play), CommandHandler('play_l2', play_l2), CommandHandler('play_l3', play_l3),
                    CommandHandler('rules', rules), CommandHandler('help', help),
-                   CommandHandler('top_secret', top_secret)]
+                   CommandHandler('top_secret', top_secret), CommandHandler('economy', economy)]
     )
 
     application.add_handler(conv_handler2)
