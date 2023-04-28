@@ -190,8 +190,10 @@ async def chal_1(update, context):
         return 2
     elif update.message.text == "2":
         await stop1(update, context, t=1)
+        return ConversationHandler.END
     elif update.message.text == "3":
         await stop1(update, context, t=2)
+        return ConversationHandler.END
     else:
         reply_keyboard = [['1', '2', '3']]
         markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -214,8 +216,10 @@ async def chal_2(update, context):
         return 3
     elif update.message.text == "2":
         await stop1(update, context, t=3)
+        return ConversationHandler.END
     elif update.message.text == "3":
         await stop1(update, context, t=4)
+        return ConversationHandler.END
     else:
         reply_keyboard = [['1', '2', '3']]
         markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -234,8 +238,10 @@ async def chal_3(update, context):
         return ConversationHandler.END
     elif update.message.text == "1":
         await stop1(update, context, t=5)
+        return ConversationHandler.END
     elif update.message.text == "2":
         await stop1(update, context, t=6)
+        return ConversationHandler.END
     else:
         reply_keyboard = [['1', '2', '3']]
         markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -276,7 +282,6 @@ async def stop1(update, context, t=0):
             "Вы попали на отвесный уступ скалы. Не найдя другог выхода, вы прыгнули и разбились. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     return ConversationHandler.END
-
 
 async def get_response(url, params):
     logger.info(f"getting {url}")
