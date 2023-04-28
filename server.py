@@ -248,52 +248,34 @@ async def chal_3(update, context):
 async def stop1(update, context, t=0):
     if t == 0:
         await update.message.reply_text(
-            "Вы смирились с безысходностью, присели у  стены лабиринта и уснули на веки вечные. Увы, вы умерли")
+            "Вы смирились с безысходностью, присели у  стены лабиринта и уснули на веки вечные. Увы, вы умерли\n"
+            "(Можете начать прохождение заново, нажав /challenge)")
     if t == 1:
         await update.message.reply_text(
-            "Звук монет оказался звоном капающей непонятной жикости. Дотронувшись до нее вы испарились. Увы, вы умерли")
+            "Звук монет оказался звоном капающей непонятной жикости. Дотронувшись до нее вы испарились. Увы, вы умерли\n"
+            "(Можете начать прохождение заново, нажав /challenge)")
     if t == 2:
         await update.message.reply_text(
-            "Сделав шаг вы провалились в яму и разбились об пики. Увы, вы умерли")
+            "Сделав шаг вы провалились в яму и разбились об пики. Увы, вы умерли\n"
+            "(Можете начать прохождение заново, нажав /challenge)")
     if t == 3:
         await update.message.reply_text(
-            "В нужный момент вы не крикнули 'Панки хой!', вас задавила толпа. Увы, вы умерли")
+            "В нужный момент вы не крикнули 'Панки хой!', вас задавила толпа. Увы, вы умерли\n"
+            "(Можете начать прохождение заново, нажав /challenge)")
     if t == 4:
         await update.message.reply_text(
             "Вы попали в внентиляцию, ветер вас понес прямо на вентилятор, где вас раскромсало на кусочки. Увы, "
-            "вы умерли")
+            "вы умерли\n"
+            "(Можете начать прохождение заново, нажав /challenge)")
     if t == 5:
         await update.message.reply_text(
-            "Вы на пляж в самый разгар цунами. Вам не удалось спастись. Увы, вы умерли")
+            "Вы на пляж в самый разгар цунами. Вам не удалось спастись. Увы, вы умерли\n"
+            "(Можете начать прохождение заново, нажав /challenge)")
     if t == 6:
         await update.message.reply_text(
-            "Вы попали на отвесный уступ скалы. Не найдя другог выхода, вы прыгнули и разбились. Увы, вы умерли")
-    await update.message.reply_text("Всего доброго!", reply_markup=ReplyKeyboardRemove())
+            "Вы попали на отвесный уступ скалы. Не найдя другог выхода, вы прыгнули и разбились. Увы, вы умерли\n"
+            "(Можете начать прохождение заново, нажав /challenge)")
     return ConversationHandler.END
-
-
-async def geocoder(update, context):
-    geocoder_uri = "http://geocode-maps.yandex.ru/1.x/"
-    response = await get_response(geocoder_uri, params={
-        "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
-        "format": "json",
-        "geocode": update.message.text
-    })
-
-    toponym = response["response"]["GeoObjectCollection"][
-        "featureMember"][0]["GeoObject"]
-    ll, spn = get_ll_spn(toponym)
-    # Можно воспользоваться готовой функцией,
-    # которую предлагалось сделать на уроках, посвящённых HTTP-геокодеру.
-
-    static_api_request = f"http://static-maps.yandex.ru/1.x/?ll={ll}&spn={spn}&l=map"
-    await context.bot.send_photo(
-        update.message.chat_id,  # Идентификатор чата. Куда посылать картинку.
-        # Ссылка на static API, по сути, ссылка на картинку.
-        # Телеграму можно передать прямо её, не скачивая предварительно карту.
-        static_api_request,
-        caption="Нашёл:"
-    )
 
 
 async def get_response(url, params):
@@ -340,7 +322,7 @@ def main():
         },
 
         # Точка прерывания диалога. В данном случае — команда /stop.
-        fallbacks=[CommandHandler('stop', stop1)]
+        fallbacks=[CommandHandler('stop', stop1), CommandHandler('challenge', challenge)]
     )
 
     application.add_handler(conv_handler)
