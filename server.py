@@ -15,6 +15,7 @@ apikey = "24c8b16e-642c-44d0-a9fa-a895d26316cf"
 right_answers = ['9,58 секунд', 'углерод', 'Стэнли Кубрик', 'водород', 'Япония',
                  'Осло', 'Юрий Гагарин', 'Азия', 'хамелеон', 'Испания']
 all_answers = []
+count = 0
 
 
 async def start2(update, context):
@@ -77,6 +78,7 @@ async def first_level(update, context):
     else:
         await update.message.reply_text('Попробуйте еще раз./play')
         count = 0
+        return ConversationHandler.END
 
 
 async def second_level(update, context):
@@ -100,6 +102,7 @@ async def second_level(update, context):
     else:
         await update.message.reply_text('Попробуйте еще раз. /play')
         count = 0
+        return ConversationHandler.END
 
 
 async def stop(update, context):
