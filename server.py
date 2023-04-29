@@ -6,7 +6,8 @@ import requests
 from telegram.ext import Application, MessageHandler, filters, CommandHandler, ConversationHandler
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import random
-full_count = 0
+
+full_count = 100
 
 # Запускаем логгирование
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
@@ -14,7 +15,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 apikey = "24c8b16e-642c-44d0-a9fa-a895d26316cf"
-right_answers = ['9,58 секунд', 'углерод', 'Стэнли Кубрик', 'радон', 'Кола-кола',
+right_answers = ['9,58 секунд', 'углерод', 'Стэнли Кубрик', 'радон', 'Кока-кола',
                  'Цюрих', 'Юрий Гагарин', 'Азия', 'хамелеон', 'Испания']
 all_answers = []
 count = 0
@@ -306,7 +307,7 @@ async def tenth_response(update, context):
     global all_answers, right_answers
     all_answers.append(update.message.text)
     n = 0
-    for i in range(len(all_answers)):
+    for i in range(len(right_answers)):
         if all_answers[i] == right_answers[i]:
             n += 1
     await update.message.reply_text(
@@ -484,13 +485,13 @@ async def weather(update, context):
                 return "Введите дату"
         location = ' '.join(location)
         coords = toponym(location).split()
-        conditions = {'clear': 'ясно', 'partly-cloudy': 'малооблачно', 'cloudy': 'облачно с прояснениями',
-                      'overcast': 'пасмурно', 'drizzle': 'морось', 'light-rain': 'небольшой дождь',
-                      'rain': 'дождь', 'moderate-rain': 'умеренно сильный', 'heavy-rain': 'сильный дождь',
-                      'continuous-heavy-rain': 'длительный сильный дождь', 'showers': 'ливень',
-                      'wet-snow': 'дождь со снегом', 'light-snow': 'небольшой снег', 'snow': 'снег',
-                      'snow-showers': 'снегопад', 'hail': 'град', 'thunderstorm': 'гроза',
-                      'thunderstorm-with-rain': 'дождь с грозой', 'thunderstorm-with-hail': 'гроза с градом'
+        conditions = {'clear': 'ясно ☀', 'partly-cloudy': 'малооблачно 🌤', 'cloudy': 'облачно с прояснениями ⛅',
+                      'overcast': 'пасмурно ☁', 'drizzle': 'морось 🌧', 'light-rain': 'небольшой дождь 🌧',
+                      'rain': 'дождь 🌧', 'moderate-rain': 'умеренно сильный 🌧', 'heavy-rain': 'сильный дождь 🌧',
+                      'continuous-heavy-rain': 'длительный сильный дождь 🌧', 'showers': 'ливень 🌧',
+                      'wet-snow': 'дождь со снегом 🌨', 'light-snow': 'небольшой снег 🌨', 'snow': 'снег 🌨',
+                      'snow-showers': 'снегопад 🌨', 'hail': 'град 🌨', 'thunderstorm': 'гроза 🌩',
+                      'thunderstorm-with-rain': 'дождь с грозой ⛈', 'thunderstorm-with-hail': 'гроза с градом ⛈'
                       }
         wind_dir = {'nw': 'северо-западное', 'n': 'северное', 'ne': 'северо-восточное', 'e': 'восточное',
                     'se': 'юго-восточное', 's': 'южное', 'sw': 'юго-западное', 'w': 'западное', 'с': 'штиль'}
