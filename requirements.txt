@@ -3,4 +3,4 @@ Flask
 Flask-Login
 Flask-WTF
 SQLAlchemy
-SQLFlchemy-serializer
+SQLAlchemy-serializer

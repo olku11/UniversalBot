@@ -5,8 +5,8 @@ from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
 
 
-class Result(db_session.SqlAlchemyBase, UserMixin, SerializerMixin):
-    __tablename__ = 'result'
+class Rating(db_session.SqlAlchemyBase, UserMixin, SerializerMixin):
+    __tablename__ = 'kvest'
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     nickname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    result = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    result = sqlalchemy.Column(sqlalchemy.String, nullable=True)
