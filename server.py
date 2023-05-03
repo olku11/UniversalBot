@@ -3,7 +3,7 @@ import logging
 import json
 import aiohttp
 import requests
-from telegram.ext import Application, MessageHandler, filters, CommandHandler, ConversationHandler
+from telegram.ext import Application, MessageHandler, filters, CommandHandler, ConversationHandler, _messagehandler
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import random
 from glob import glob
@@ -29,6 +29,7 @@ async def start2(update, context):
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
     await update.message.reply_text(
         "Привет. Здесь ты можешь неплохо приподнятся!\n"
+        f"Можно вас называть {update.message.chat.first_name}?"
         "Вы можете проверить свою удачу, нажав /play.\n"
         "Можно послать команду /rules , если хотите понять правила.\n"
         "Также можно просто закончить диалог с помощью команды /stop\n"
@@ -50,8 +51,9 @@ async def help(update, context):
         "/questions - запускает викторину.\n"
         "/challenge - запускает квест.\n"
         "/send_it - приобретает карточки в магазине за 30 монет.\n"
-        "/inventary - ваш карточный инвентарь.\n"
-        "/weather - функция погоды.(сначала обязательно вводится место, для которого вы хотите узнать погоду,\n"
+        "/inventary - ваш карточный инвентарь\n"
+        "/IDDQD - чит-код для денег\n"
+        "/weather - функция погоды. (сначала обязательно вводится место, для которого вы хотите узнать погоду"
         "потом вводятся необязательные аргументы:\n"
         "-temp - убирает значение температуры(°C) из ответа\n"
         "-reply - убирает место, возвращаемое функцией, из ответа\n"
@@ -62,6 +64,10 @@ async def help(update, context):
         "--extra - добавляет дополнительные параметры\n"
         "(скорость порывов ветра (м/с), Давление (мм рт.ст.), Влажность воздуха (%)),\n"
         "после этого вводится необязательная дата в формате ГГГГ-ММ-ДД, на которую вы хотите узнать прогноз погоды)")
+
+
+async def name(update, context):
+    await update.message.reply_text(update.message.chat.first_name)
 
 
 async def top_secret(update, context):
@@ -709,6 +715,7 @@ def main():
     application.add_handler(CommandHandler('inventary', inventary))
     application.add_handler(CommandHandler('weather', weather))
     application.add_handler(CommandHandler('send_it', send_it))
+    application.add_handler(CommandHandler('name', name))
 
     application.run_polling()
 
