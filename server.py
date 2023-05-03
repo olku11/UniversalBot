@@ -5,10 +5,12 @@ import aiohttp
 import requests
 from telegram.ext import Application, MessageHandler, filters, CommandHandler, ConversationHandler
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-import random
+from random import choice, random
+from glob import glob
 
 full_count = 100
-
+count_photo = []
+hit = 0
 # Запускаем логгирование
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
@@ -22,7 +24,7 @@ count = 0
 
 
 async def start2(update, context):
-    reply_keyboard = [['/menu_random', '/rules', '/top_secret', '/economy']]
+    reply_keyboard = [['/menu_random', '/rules', '/top_secret', '/economy', '/inventary']]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
     await update.message.reply_text(
         "Привет. Здесь ты можешь неплохо приподнятся!\n"
@@ -191,6 +193,44 @@ async def questions(update, context):
         reply_markup=markup)
 
     return 1
+
+
+async def send_it(bot, update):
+    global count_photo
+    global hit
+    global full_count
+    hit = hit + 1
+    lists = glob('images/*')
+    picture = lists[0]
+    if len(count_photo) == 3:
+        await bot.message.reply_text(
+            f"у тебя есть все карточки")
+    elif picture not in count_photo:
+        if full_count >= 30:
+            await update.bot.send_photo(chat_id=bot.message.chat.id, photo=open(picture, 'rb'))
+            count_photo.append(picture)
+            full_count = full_count - 30
+        else:
+            await bot.message.reply_text(
+                f"Недостаточно средств")
+
+    elif picture in count_photo:
+        for u in range(3):
+            picture = lists[u]
+            if picture not in count_photo:
+                if full_count >= 30:
+                    await update.bot.send_photo(chat_id=bot.message.chat.id, photo=open(picture, 'rb'))
+                    count_photo.append(picture)
+                    full_count = full_count - 30
+                    break
+                else:
+                    await bot.message.reply_text(
+                        f"Недостаточно средств")
+
+
+async def inventary(bot, update):
+    for picture in count_photo:
+        await update.bot.send_photo(chat_id=bot.message.chat.id, photo=open(picture, 'rb'))
 
 
 # 1
@@ -635,7 +675,9 @@ def main():
 
     application.add_handler(conv_handler1)
     application.add_handler(CommandHandler('questions', questions))
+    application.add_handler(CommandHandler('inventary', inventary))
     application.add_handler(CommandHandler('weather', weather))
+    application.add_handler(CommandHandler('send_it', send_it))
 
     application.run_polling()
 
