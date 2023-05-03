@@ -5,7 +5,7 @@ import aiohttp
 import requests
 from telegram.ext import Application, MessageHandler, filters, CommandHandler, ConversationHandler
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-from random import choice, random
+import random
 from glob import glob
 
 full_count = 100
@@ -652,7 +652,7 @@ def main():
         fallbacks=[CommandHandler('stop', stop1), CommandHandler('challenge', challenge)]
     )
     conv_handler2 = ConversationHandler(
-        entry_points=[CommandHandler('start', start2), CommandHandler('play', play), CommandHandler('play_l2', play_l2), CommandHandler('play_l3', play_l3), CommandHandler('economy', economy)],
+        entry_points=[CommandHandler('start', start2), CommandHandler('play', play), CommandHandler('play_l2', play_l2), CommandHandler('play_l3', play_l3), CommandHandler('economy', economy), CommandHandler('menu_random', menu_random)],
 
         states={
 
