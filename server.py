@@ -24,7 +24,8 @@ count = 0
 
 
 async def start2(update, context):
-    reply_keyboard = [['/menu_random', '/rules', '/top_secret', '/economy', '/inventary']]
+    reply_keyboard = [['/menu_random', '/top_secret'],
+                      ['/economy', '/inventary']]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
     await update.message.reply_text(
         "Привет. Здесь ты можешь неплохо приподнятся!\n"
@@ -57,6 +58,13 @@ async def economy(update, context):
     global full_count
     await update.message.reply_text(
         f"Ваш суммарный счет: {full_count}💸")
+
+async def IDDQD(update, context):
+    global full_count
+    full_count = full_count + 1000
+    await update.message.reply_text(
+        f"Ваш суммарный счет: {full_count}💸")
+
 
 
 async def menu_random(update, context):
@@ -674,6 +682,7 @@ def main():
     application.add_handler(conv_handler)
 
     application.add_handler(conv_handler1)
+    application.add_handler(CommandHandler('IDDQD', IDDQD))
     application.add_handler(CommandHandler('questions', questions))
     application.add_handler(CommandHandler('inventary', inventary))
     application.add_handler(CommandHandler('weather', weather))
