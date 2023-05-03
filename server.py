@@ -29,7 +29,7 @@ async def start2(update, context):
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
     await update.message.reply_text(
         "Привет. Здесь ты можешь неплохо приподнятся!\n"
-        "Вы можете проверить свою дачу, нажав /play.\n"
+        "Вы можете проверить свою удачу, нажав /play.\n"
         "Можно послать команду /rules , если хотите понять правила.\n"
         "Также можно просто закончить диалог с помощью команды /stop\n"
         "Чтобы вернться в меню введите /menu_random\n"
@@ -41,7 +41,27 @@ async def start2(update, context):
 
 async def help(update, context):
     await update.message.reply_text(
-        "чел боже")
+        "Здесь описаны все функции данного бота.\n"
+        "/start - запускает бота.\n"
+        "/top_secret - секретная функция.\n"
+        "/menu_random - меню для угадайки.\n"
+        "/play(play_l2, play_l3) - запускает угадайку\n"
+        "/stop - останавливает игру.\n"
+        "/questions - запускает викторину.\n"
+        "/challenge - запускает квест.\n"
+        "/send_it - приобретает карточки в магазине за 30 монет.\n"
+        "/inventary - ваш карточный инвентарь.\n"
+        "/weather - функция погоды.(сначала обязательно вводится место, для которого вы хотите узнать погоду,\n"
+        "потом вводятся необязательные аргументы:\n"
+        "-temp - убирает значение температуры(°C) из ответа\n"
+        "-reply - убирает место, возвращаемое функцией, из ответа\n"
+        "-reply_date - убирает дату из ответа, если она присутствует\n"
+        "-condition - убирает параметры осадков из ответа\n"
+        "-wind_dir - убирает направление ветра из ответа\n"
+        "-wind_speed - убирает скорость ветра(м/с) из ответа\n"
+        "--extra - добавляет дополнительные параметры\n"
+        "(скорость порывов ветра (м/с), Давление (мм рт.ст.), Влажность воздуха (%)),\n"
+        "после этого вводится необязательная дата в формате ГГГГ-ММ-ДД, на которую вы хотите узнать прогноз погоды)")
 
 
 async def top_secret(update, context):
@@ -508,7 +528,6 @@ async def weather(update, context):
     global full_count
     full_count -= 6
 
-
     def yandex_weather(data):
         location = " ".join(data).split()
         if '--extra' in location:
@@ -620,6 +639,7 @@ async def weather(update, context):
     else:
         await update.message.reply_text('Введите геолокацию для вывода погоды')
 
+
 def main():
     application = Application.builder().token('5999252740:AAENPLeEI4GGgo_0H4QTWZiuCzqn2KWVtQU').build()
 
@@ -660,7 +680,9 @@ def main():
         fallbacks=[CommandHandler('stop', stop1), CommandHandler('challenge', challenge)]
     )
     conv_handler2 = ConversationHandler(
-        entry_points=[CommandHandler('start', start2), CommandHandler('play', play), CommandHandler('play_l2', play_l2), CommandHandler('play_l3', play_l3), CommandHandler('economy', economy), CommandHandler('menu_random', menu_random)],
+        entry_points=[CommandHandler('start', start2), CommandHandler('play', play), CommandHandler('play_l2', play_l2),
+                      CommandHandler('play_l3', play_l3), CommandHandler('economy', economy),
+                      CommandHandler('menu_random', menu_random)],
 
         states={
 
