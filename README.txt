@@ -10,3 +10,4 @@
 хранятся на сайте, бот отсылает их через restful
 в папке bot лежит server.py - это бот
 в папке site лежит server.py - это сайт
+сайт запущен на адресе http://ilku111.pythonanywhere.com
