@@ -73,6 +73,7 @@ def astronaut_selection():
             user.password = user.hashed_password
             db_session.add(user)
             db_session.commit()
+            login_user(user)
         return redirect('/result')
 
 
