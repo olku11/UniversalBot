@@ -27,7 +27,7 @@ name = 'anonimus'
 
 async def start(update, context):
     await update.message.reply_text(f"Привет, прежде чем ты начнешь пользоваться ботом, скажи, пожалуйста, \n"
-                                    f"можно использовать твоё имя({update.message.chat.first_name}) \n"
+                                    f"можно использовать твоё имя ({update.message.chat.first_name}) \n"
                                     f"для сбора статистики (да / нет)? Вот инструкция по командам для этого бота: /help")
     if update.message.text.lower() == "да":
         return 1
@@ -756,8 +756,8 @@ def main():
 
         },
 
-        fallbacks=[CommandHandler('stop', stop1), CommandHandler('answer_yes', answer_yes),
-                   CommandHandler('answer_no', answer_no)]
+        fallbacks=[CommandHandler('answer_yes', answer_yes),
+                   CommandHandler('answer_no', answer_no), CommandHandler('abc', another_answer)]
     )
 
     application.add_handler(conv_handler)
