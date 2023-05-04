@@ -113,7 +113,6 @@ async def IDDQD(update, context):
 async def menu_random(update, context):
     await update.message.reply_text(
         "Вы можете проверить свою удачу, нажав /play.\n"
-        "Можно послать команду /rules , если хотите понять правила.\n"
         "Также можно просто закончить диалог с помощью команды /stop")
 
     return 1
