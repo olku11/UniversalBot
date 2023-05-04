@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="" method="post" class="form">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+              integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+              crossorigin="anonymous">
+        <title>Привет, Яндекс!</title>
+    </head>
+    <h1>Rating at /questions</h1>
+    <div class="form_item">
+            <input type="button" value="Result at /challenge" onClick='location.href="/result"'>
+        </div>
+    <table class="table">
+          <thead class="thead-light">
+    <tr style="background-color: #e1e1e1">
+      <th scope="col">Имя</th>
+      <th scope="col">Результат</th>
+    </tr>
+  </thead>
+{% for job in form.jobs %}
+{% set clr = "#c2ffde" if job[4] else "#fff6c1" %}
+
+  <tbody>
+    <tr style="background-color: #aeeaff">
+      <td>{{ job[0] }}</td>
+      <td>{{ job[1] }}</td>
+    </tr>
+  </tbody>
+{% endfor %}
+</table>
+</form>
+{% endblock %}
