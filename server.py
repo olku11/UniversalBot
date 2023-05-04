@@ -22,39 +22,38 @@ right_answers = ['9,58 секунд', 'углерод', 'Стэнли Кубри
                  'Цюрих', 'Юрий Гагарин', 'Азия', 'хамелеон', 'Испания']
 all_answers = []
 count = 0
-name = 'anonimus'
+name = 0
 
 
 async def start(update, context):
+    reply_keyboard = [['да', 'нет']]
+    markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     await update.message.reply_text(f"Привет, прежде чем ты начнешь пользоваться ботом, скажи, пожалуйста, \n"
                                     f"можно использовать твоё имя ({update.message.chat.first_name}) \n"
-                                    f"для сбора статистики (да / нет)? Вот инструкция по командам для этого бота: /help")
-    if update.message.text.lower() == "да":
-        return 1
-    if update.message.text.lower() == "нет":
-        return 0
-    else:
-        return 2
+                                    f"для сбора статистики и рейтинга (да / нет)? Вот инструкция по командам для этого "
+                                    f"бота: /help", reply_markup=markup)
+    return 0
 
 
-async def answer_yes(update, context):
+async def ans(update, context):
     global name
-    await update.message.reply_text("Ваш ответ записан")
-    name = update.message.chat.first_name
-
-
-async def answer_no(update, context):
-    await update.message.reply_text("Ваш ответ записан")
-
-
-async def another_answer(update, context):
-    await update.message.reply_text('Пожалуйста, ответьте на предыдущий вопрос да / нет')
     if update.message.text.lower() == "да":
-        return 1
-    if update.message.text.lower() == "нет":
-        return 0
+        reply_keyboard = [['/economy', '/questions'], ['/challenge', '/play']]
+        markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        await update.message.reply_text("Ваш ответ записан", reply_markup=markup)
+        name = 1
+        return ConversationHandler.END
+    elif update.message.text.lower() == "нет":
+        reply_keyboard = [['/economy', '/questions'], ['/challenge', '/play']]
+        markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        await update.message.reply_text("Ваш ответ записан", reply_markup=markup)
+        name = 0
+        return ConversationHandler.END
     else:
-        return 2
+        reply_keyboard = [['да', 'нет']]
+        markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        await update.message.reply_text('Пожалуйста, ответьте на предыдущий вопрос да / нет', reply_markup=markup)
+        return 0
 
 
 async def help(update, context):
@@ -70,6 +69,7 @@ async def help(update, context):
         "/send_it - приобретает карточки в магазине за 30 монет.\n"
         "/inventary - ваш карточный инвентарь\n"
         "/IDDQD - чит-код для денег\n"
+        "/settings - изменить настройки приватности\n"
         "/weather - функция погоды. (сначала обязательно вводится место, для которого вы хотите узнать погоду"
         "потом вводятся необязательные аргументы:\n"
         "-temp - убирает значение температуры(°C) из ответа\n"
@@ -405,8 +405,12 @@ async def tenth_response(update, context):
         f'Вы выполнили тест на {n / len(right_answers) * 100}%\n'
         f'ваш суммарный счет: {full_count + (n * 3)}', reply_markup=ReplyKeyboardRemove())
     all_answers = []
-    post('https://ilku111.pythonanywhere.com/post',
-         json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": n})
+    if name:
+        post('https://ilku111.pythonanywhere.com/post',
+             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": n})
+    else:
+        post('https://ilku111.pythonanywhere.com/post',
+             json={'nickname': f'Anonimus', "result": n})
     return ConversationHandler.END
 
 
@@ -511,59 +515,114 @@ async def chal_3(update, context):
 
 async def stop1(update, context, t=0):
     if t == 0:
-        post('https://ilku111.pythonanywhere.com/post1',
-             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": 'Не '
-                                                                                                              'дошел '
-                                                                                                              'до '
-                                                                                                              'конца'})
+        if name:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result":
+                     'Не '
+                     'дошел '
+                     'до '
+                     'конца'})
+        else:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'Anonimus', "result": 'Не '
+                                                          'дошел '
+                                                          'до '
+                                                          'конца'})
+
         await update.message.reply_text(
             "Вы смирились с безысходностью, присели у  стены лабиринта и уснули на веки вечные. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 1:
-        post('https://ilku111.pythonanywhere.com/post1',
-             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер "
-                                                                                                              "из-за "
-                                                                                                              "жидкости"})
+        if name:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}',
+                       "result": "Умер "
+                                 "из-за "
+                                 "жидкости"})
+        else:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}',
+                       "result": "Умер "
+                                 "из-за "
+                                 "жидкости"})
         await update.message.reply_text(
             "Звук монет оказался звоном капающей непонятной жикости. Дотронувшись до нее вы испарились. Увы, "
             "вы умерли\n "
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 2:
-        post('https://ilku111.pythonanywhere.com/post1',
-             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер "
-                                                                                                              "от "
-                                                                                                              "пик"})
+        if name:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}',
+                       "result": "Умер "
+                                 "от "
+                                 "пик"})
+        else:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'Anonimus',
+                       "result": "Умер "
+                                 "от "
+                                 "пик"})
         await update.message.reply_text(
             "Сделав шаг вы провалились в яму и разбились об пики. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 3:
-        post('https://ilku111.pythonanywhere.com/post1',
-             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер "
-                                                                                                              "из-за "
-                                                                                                              "музыки"})
+        if name:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}',
+                       "result": "Умер "
+                                 "из-за "
+                                 "музыки"})
+        else:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'Anonimus',
+                       "result": "Умер "
+                                 "из-за "
+                                 "музыки"})
         await update.message.reply_text(
             "В нужный момент вы не крикнули 'Панки хой!', вас задавила толпа. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 4:
-        post('https://ilku111.pythonanywhere.com/post1',
-             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер "
-                                                                                                              "от "
-                                                                                                              "вентилятора"})
+        if name:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}',
+                       "result": "Умер "
+                                 "от "
+                                 "вентилятора"})
+        else:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'Anonimus',
+                       "result": "Умер "
+                                 "от "
+                                 "вентилятора"})
         await update.message.reply_text(
             "Вы попали в внентиляцию, ветер вас понес прямо на вентилятор, где вас раскромсало на кусочки. Увы, "
             "вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 5:
-        post('https://ilku111.pythonanywhere.com/post1',
-             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер в "
-                                                                                                              "Японии"})
+        if name:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}',
+                       "result": "Умер в "
+                                 "Японии"})
+        else:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'Anonimus',
+                       "result": "Умер в "
+                                 "Японии"})
         await update.message.reply_text(
             "Вы на пляж в самый разгар цунами. Вам не удалось спастись. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 6:
-        post('https://ilku111.pythonanywhere.com/post1',
-             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер в "
-                                                                                                              "горах"})
+        if name:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}',
+                       "result": "Умер в "
+                                 "горах"})
+        else:
+            post('https://ilku111.pythonanywhere.com/post1',
+                 json={'nickname': f'Anonimus',
+                       "result": "Умер в "
+                                 "горах"})
         await update.message.reply_text(
             "Вы попали на отвесный уступ скалы. Не найдя другог выхода, вы прыгнули и разбились. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
@@ -747,29 +806,39 @@ def main():
     )
 
     conv_handler3 = ConversationHandler(
-        entry_points=[CommandHandler('start', start), CommandHandler('abc', another_answer)],
+        entry_points=[CommandHandler('start', start)],
 
         states={
-            0: [MessageHandler(filters.TEXT & ~filters.COMMAND, answer_no)],
-            1: [MessageHandler(filters.TEXT & ~filters.COMMAND, answer_yes)],
-            2: [MessageHandler(filters.TEXT & ~filters.COMMAND, another_answer)]
+            0: [MessageHandler(filters.TEXT & ~filters.COMMAND, ans)]
 
         },
 
-        fallbacks=[CommandHandler('answer_yes', answer_yes),
-                   CommandHandler('answer_no', answer_no), CommandHandler('abc', another_answer)]
+        fallbacks=[CommandHandler('abc', ans)]
+    )
+
+    conv_handler4 = ConversationHandler(
+        entry_points=[CommandHandler('settings', start)],
+
+        states={
+            0: [MessageHandler(filters.TEXT & ~filters.COMMAND, ans)]
+
+        },
+
+        fallbacks=[CommandHandler('abc', ans)]
     )
 
     application.add_handler(conv_handler)
     application.add_handler(conv_handler1)
     application.add_handler(conv_handler2)
     application.add_handler(conv_handler3)
+    application.add_handler(conv_handler4)
     application.add_handler(CommandHandler('IDDQD', IDDQD))
     application.add_handler(CommandHandler('questions', questions))
     application.add_handler(CommandHandler('inventary', inventary))
     application.add_handler(CommandHandler('weather', weather))
     application.add_handler(CommandHandler('send_it', send_it))
     application.add_handler(CommandHandler('name', name))
+    application.add_handler(CommandHandler('help', help))
 
     application.run_polling()
 
