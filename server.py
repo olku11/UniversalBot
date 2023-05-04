@@ -68,6 +68,7 @@ async def help(update, context):
         "/challenge - запускает квест.\n"
         "/send_it - приобретает карточки в магазине за 30 монет.\n"
         "/inventary - ваш карточный инвентарь\n"
+        "/site - даст ссылку на сайт с результатами викторины и квеста\n"
         "/IDDQD - чит-код для денег\n"
         "/settings - изменить настройки приватности\n"
         "/weather - функция погоды. (сначала обязательно вводится место, для которого вы хотите узнать погоду"
@@ -83,8 +84,8 @@ async def help(update, context):
         "после этого вводится необязательная дата в формате ГГГГ-ММ-ДД, на которую вы хотите узнать прогноз погоды)")
 
 
-async def name(update, context):
-    await update.message.reply_text(update.message.chat.first_name)
+async def site(update, context):
+    await update.message.reply_text('http://ilku111.pythonanywhere.com')
 
 
 async def top_secret(update, context):
@@ -838,7 +839,7 @@ def main():
     application.add_handler(CommandHandler('inventary', inventary))
     application.add_handler(CommandHandler('weather', weather))
     application.add_handler(CommandHandler('send_it', send_it))
-    application.add_handler(CommandHandler('name', name))
+    application.add_handler(CommandHandler('site', site))
     application.add_handler(CommandHandler('help', help))
 
     application.run_polling()
