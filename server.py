@@ -7,6 +7,7 @@ from telegram.ext import Application, MessageHandler, filters, CommandHandler, C
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import random
 from glob import glob
+from requests import post
 
 full_count = 100
 count_photo = []
@@ -85,12 +86,12 @@ async def economy(update, context):
     await update.message.reply_text(
         f"Ваш суммарный счет: {full_count}💸")
 
+
 async def IDDQD(update, context):
     global full_count
     full_count = full_count + 1000
     await update.message.reply_text(
         f"Ваш суммарный счет: {full_count}💸")
-
 
 
 async def menu_random(update, context):
@@ -388,6 +389,7 @@ async def tenth_response(update, context):
         f'Вы выполнили тест на {n / len(right_answers) * 100}%\n'
         f'ваш суммарный счет: {full_count + (n * 3)}', reply_markup=ReplyKeyboardRemove())
     all_answers = []
+    post('https://ilku111.pythonanywhere.com/post', json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": n})
     return ConversationHandler.END
 
 
@@ -492,31 +494,59 @@ async def chal_3(update, context):
 
 async def stop1(update, context, t=0):
     if t == 0:
+        post('https://ilku111.pythonanywhere.com/post1',
+             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": 'Не '
+                                                                                                              'дошел '
+                                                                                                              'до '
+                                                                                                              'конца'})
         await update.message.reply_text(
             "Вы смирились с безысходностью, присели у  стены лабиринта и уснули на веки вечные. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 1:
+        post('https://ilku111.pythonanywhere.com/post1',
+             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер "
+                                                                                                              "из-за "
+                                                                                                              "жидкости"})
         await update.message.reply_text(
-            "Звук монет оказался звоном капающей непонятной жикости. Дотронувшись до нее вы испарились. Увы, вы умерли\n"
+            "Звук монет оказался звоном капающей непонятной жикости. Дотронувшись до нее вы испарились. Увы, "
+            "вы умерли\n "
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 2:
+        post('https://ilku111.pythonanywhere.com/post1',
+             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер "
+                                                                                                              "от "
+                                                                                                              "пик"})
         await update.message.reply_text(
             "Сделав шаг вы провалились в яму и разбились об пики. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 3:
+        post('https://ilku111.pythonanywhere.com/post1',
+             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер "
+                                                                                                              "из-за "
+                                                                                                              "музыки"})
         await update.message.reply_text(
             "В нужный момент вы не крикнули 'Панки хой!', вас задавила толпа. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 4:
+        post('https://ilku111.pythonanywhere.com/post1',
+             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер "
+                                                                                                              "от "
+                                                                                                              "вентилятора"})
         await update.message.reply_text(
             "Вы попали в внентиляцию, ветер вас понес прямо на вентилятор, где вас раскромсало на кусочки. Увы, "
             "вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 5:
+        post('https://ilku111.pythonanywhere.com/post1',
+             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер в "
+                                                                                                              "Японии"})
         await update.message.reply_text(
             "Вы на пляж в самый разгар цунами. Вам не удалось спастись. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
     if t == 6:
+        post('https://ilku111.pythonanywhere.com/post1',
+             json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": "Умер в "
+                                                                                                              "горах"})
         await update.message.reply_text(
             "Вы попали на отвесный уступ скалы. Не найдя другог выхода, вы прыгнули и разбились. Увы, вы умерли\n"
             "(Можете начать прохождение заново, нажав /challenge)")
