@@ -58,7 +58,7 @@ async def ans(update, context):
 
 async def help(update, context):
     await update.message.reply_text(
-        "Здесь описаны все функции данного бота.\n"
+        "Здесь описаны все функции данного бота.(не забывайте писать /stop, если хотите прервать комплексную функцию)\n"
         "/start - запускает бота.\n"
         "/top_secret - секретная функция.\n"
         "/menu_random - меню для угадайки.\n"
@@ -81,10 +81,6 @@ async def help(update, context):
         "--extra - добавляет дополнительные параметры\n"
         "(скорость порывов ветра (м/с), Давление (мм рт.ст.), Влажность воздуха (%)),\n"
         "после этого вводится необязательная дата в формате ГГГГ-ММ-ДД, на которую вы хотите узнать прогноз погоды)")
-
-
-async def name(update, context):
-    await update.message.reply_text(update.message.chat.first_name)
 
 
 async def top_secret(update, context):
