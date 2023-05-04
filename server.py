@@ -22,23 +22,39 @@ right_answers = ['9,58 секунд', 'углерод', 'Стэнли Кубри
                  'Цюрих', 'Юрий Гагарин', 'Азия', 'хамелеон', 'Испания']
 all_answers = []
 count = 0
+name = 'anonimus'
 
 
-async def start2(update, context):
-    reply_keyboard = [['/menu_random', '/top_secret'],
-                      ['/economy', '/inventary']]
-    markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
-    await update.message.reply_text(
-        "Привет. Здесь ты можешь неплохо приподнятся!\n"
-        f"Можно вас называть {update.message.chat.first_name}?"
-        "Вы можете проверить свою удачу, нажав /play.\n"
-        "Можно послать команду /rules , если хотите понять правила.\n"
-        "Также можно просто закончить диалог с помощью команды /stop\n"
-        "Чтобы вернться в меню введите /menu_random\n"
-        "Если вам что-то непонятно, кликайте сюда /help",
-        reply_markup=markup)
+async def start(update, context):
+    await update.message.reply_text(f"Привет, прежде чем ты начнешь пользоваться ботом, скажи, пожалуйста, \n"
+                                    f"можно использовать твоё имя({update.message.chat.first_name}) \n"
+                                    f"для сбора статистики (да / нет)? Вот инструкция по командам для этого бота: /help")
+    if update.message.text.lower() == "да":
+        return 1
+    if update.message.text.lower() == "нет":
+        return 0
+    else:
+        return 2
 
-    return 1
+
+async def answer_yes(update, context):
+    global name
+    await update.message.reply_text("Ваш ответ записан")
+    name = update.message.chat.first_name
+
+
+async def answer_no(update, context):
+    await update.message.reply_text("Ваш ответ записан")
+
+
+async def another_answer(update, context):
+    await update.message.reply_text('Пожалуйста, ответьте на предыдущий вопрос да / нет')
+    if update.message.text.lower() == "да":
+        return 1
+    if update.message.text.lower() == "нет":
+        return 0
+    else:
+        return 2
 
 
 async def help(update, context):
@@ -389,7 +405,8 @@ async def tenth_response(update, context):
         f'Вы выполнили тест на {n / len(right_answers) * 100}%\n'
         f'ваш суммарный счет: {full_count + (n * 3)}', reply_markup=ReplyKeyboardRemove())
     all_answers = []
-    post('https://ilku111.pythonanywhere.com/post', json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": n})
+    post('https://ilku111.pythonanywhere.com/post',
+         json={'nickname': f'{update.message.chat.first_name} {update.message.chat.last_name}', "result": n})
     return ConversationHandler.END
 
 
@@ -697,26 +714,20 @@ def main():
         fallbacks=[CommandHandler('stop', stop)]
     )
     conv_handler1 = ConversationHandler(
-        # Точка входа в диалог.
-        # В данном случае — команда /start. Она задаёт первый вопрос.
         entry_points=[CommandHandler('challenge', challenge)],
 
-        # Состояние внутри диалога.
-        # Вариант с двумя обработчиками, фильтрующими текстовые сообщения.
         states={
-            # Функция читает ответ на первый вопрос и задаёт второй.
             1: [MessageHandler(filters.TEXT & ~filters.COMMAND, chal_1)],
-            # Функция читает ответ на второй вопрос и завершает диалог.
             2: [MessageHandler(filters.TEXT & ~filters.COMMAND, chal_2)],
             3: [MessageHandler(filters.TEXT & ~filters.COMMAND, chal_3)]
 
         },
 
-        # Точка прерывания диалога. В данном случае — команда /stop.
         fallbacks=[CommandHandler('stop', stop1), CommandHandler('challenge', challenge)]
     )
+
     conv_handler2 = ConversationHandler(
-        entry_points=[CommandHandler('start', start2), CommandHandler('play', play), CommandHandler('play_l2', play_l2),
+        entry_points=[CommandHandler('play', play), CommandHandler('play_l2', play_l2),
                       CommandHandler('play_l3', play_l3), CommandHandler('economy', economy),
                       CommandHandler('menu_random', menu_random)],
 
@@ -735,11 +746,24 @@ def main():
                    CommandHandler('top_secret', top_secret), CommandHandler('economy', economy)]
     )
 
-    application.add_handler(conv_handler2)
+    conv_handler3 = ConversationHandler(
+        entry_points=[CommandHandler('start', start), CommandHandler('abc', another_answer)],
+
+        states={
+            0: [MessageHandler(filters.TEXT & ~filters.COMMAND, answer_no)],
+            1: [MessageHandler(filters.TEXT & ~filters.COMMAND, answer_yes)],
+            2: [MessageHandler(filters.TEXT & ~filters.COMMAND, another_answer)]
+
+        },
+
+        fallbacks=[CommandHandler('stop', stop1), CommandHandler('answer_yes', answer_yes),
+                   CommandHandler('answer_no', answer_no)]
+    )
 
     application.add_handler(conv_handler)
-
     application.add_handler(conv_handler1)
+    application.add_handler(conv_handler2)
+    application.add_handler(conv_handler3)
     application.add_handler(CommandHandler('IDDQD', IDDQD))
     application.add_handler(CommandHandler('questions', questions))
     application.add_handler(CommandHandler('inventary', inventary))
