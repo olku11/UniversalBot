@@ -393,6 +393,7 @@ async def ninth_response(update, context):
 
 # 10
 async def tenth_response(update, context):
+    global name
     global full_count
     global all_answers, right_answers
     all_answers.append(update.message.text)
@@ -513,6 +514,7 @@ async def chal_3(update, context):
 
 
 async def stop1(update, context, t=0):
+    global name
     if t == 0:
         if name:
             post('https://ilku111.pythonanywhere.com/post1',
