@@ -1,2 +1,8 @@
 aiohttp
 python-telegram-bot
+Flask
+Flask-Login
+Flask-RESTful
+Flask-WTF
+SQLAlchemy
+SQLAlchemy-serializer
