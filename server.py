@@ -84,18 +84,13 @@ async def help(update, context):
         "после этого вводится необязательная дата в формате ГГГГ-ММ-ДД, на которую вы хотите узнать прогноз погоды)")
 
 
-async def name(update, context):
-    await update.message.reply_text(update.message.chat.first_name)
+async def site(update, context):
+    await update.message.reply_text('http://ilku111.pythonanywhere.com')
 
 
 async def top_secret(update, context):
     await update.message.reply_text("Отблагодарите авторов деревянным рубликом:\n"
                                     "5536914016758595")
-
-
-async def rules(update, context):
-    await update.message.reply_text(
-        "Итак, данный раздел нашего бота просто конченный!")
 
 
 async def economy(update, context):
@@ -803,7 +798,7 @@ def main():
 
         fallbacks=[CommandHandler('stop', stop), CommandHandler('menu_random', menu_random),
                    CommandHandler('play', play), CommandHandler('play_l2', play_l2), CommandHandler('play_l3', play_l3),
-                   CommandHandler('rules', rules), CommandHandler('help', help),
+                   CommandHandler('help', help),
                    CommandHandler('top_secret', top_secret), CommandHandler('economy', economy)]
     )
 
@@ -839,7 +834,7 @@ def main():
     application.add_handler(CommandHandler('inventary', inventary))
     application.add_handler(CommandHandler('weather', weather))
     application.add_handler(CommandHandler('send_it', send_it))
-    application.add_handler(CommandHandler('name', name))
+    application.add_handler(CommandHandler('site', site))
     application.add_handler(CommandHandler('help', help))
 
     application.run_polling()
